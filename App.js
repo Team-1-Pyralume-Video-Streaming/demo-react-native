@@ -1,56 +1,50 @@
-import { useVideoPlayer, VideoView } from "expo-video";
-import { StyleSheet, View, Dimensions } from "react-native";
-import mediaVideo from "./assets/demo.mp4";
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import ProfilePage from './pages/Profile';
+import VideoScreen from './pages/VideoScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-const mediaSource = mediaVideo;
+const Tab = createBottomTabNavigator();
 
-const videoSource =
-  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-
-export default function VideoScreen() {
-  const player = useVideoPlayer(mediaSource, (player) => {
-    player.loop = true;
-    player.play();
-  });
-  const player2 = useVideoPlayer(videoSource, (player) => {
-    player.loop = true;
-    player.play();
-  });
-
+export default function App() {
   return (
-    <View style={styles.contentContainer}>
-      <VideoView
-        style={styles.video}
-        player={player}
-        allowsFullscreen
-        allowsPictureInPicture
-      />
+    <SafeAreaProvider>
+      <NavigationContainer>
 
-      <VideoView
-        style={styles.video}
-        player={player2}
-        allowsFullscreen
-        allowsPictureInPicture
-      />
-    </View>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+
+              if (route.name === 'Home') {
+                iconName = focused ? 'home' : 'home-outline';
+              } else if (route.name === 'About') {
+                iconName = focused ? 'information-circle' : 'information-circle-outline';
+              } else if (route.name === 'Video') {
+                iconName = focused ? 'videocam' : 'videocam-outline';
+              } else if (route.name === 'Profile') {
+                iconName = focused ? 'person' : 'person-outline';
+              }
+
+              return <Icon name={iconName} size={size} color={color} />;
+            },
+            tabBarActiveTintColor: 'white',
+            tabBarInactiveTintColor: 'gray',
+            tabBarStyle: {
+              backgroundColor: 'black',
+            },
+          })}
+        >
+          <Tab.Screen name="Home" component={HomePage} />
+          <Tab.Screen name="About" component={AboutPage} />
+          <Tab.Screen name="Video" component={VideoScreen} />
+          <Tab.Screen name="Profile" component={ProfilePage} />
+        </Tab.Navigator>
+      </NavigationContainer>
+
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
-
-    alignItems: "center",
-    // justifyContent: "center",
-    paddingHorizontal: 50,
-    backgroundColor: "#000",
-  },
-  video: {
-    marginTop: 40,
-    width: Dimensions.get("window").width,
-    height: 275,
-  },
-  controlsContainer: {
-    padding: 10,
-  },
-});
