@@ -1,5 +1,8 @@
+
+import React, { useLayoutEffect } from 'react';
 import { useVideoPlayer, VideoView } from "expo-video";
-import { StyleSheet, View, Dimensions } from "react-native";
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity } from "react-native";
+import Icon from 'react-native-vector-icons/Ionicons';
 import mediaVideo from "../assets/demo.mp4";
 
 const mediaSource = mediaVideo;
@@ -7,7 +10,22 @@ const mediaSource = mediaVideo;
 const videoSource =
 	"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
-export default function VideoScreen() {
+export default function VideoScreen({ navigation }) {
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<TouchableOpacity onPress={() => alert('Search button pressed')}>
+					<Icon name="add" size={25} color="red" style={{ marginRight: 15 }} />
+				</TouchableOpacity>
+			),
+			headerTitle: 'Video',
+			headerStyle: {
+				backgroundColor: 'black',
+			},
+			headerTintColor: 'red',
+		});
+	}, [navigation]);
+
 	const player = useVideoPlayer(mediaSource, (player) => {
 		player.loop = true;
 		player.play();
@@ -19,13 +37,14 @@ export default function VideoScreen() {
 
 	return (
 		<View style={styles.contentContainer}>
+			<Text style={{ color: '#fff', textAlign: "center" }}>1. Local Video Player</Text>
 			<VideoView
 				style={styles.video}
 				player={player}
 				allowsFullscreen
 				allowsPictureInPicture
 			/>
-
+			<Text style={{ color: '#fff', textAlign: "center" }}>2. Online Video Player</Text>
 			<VideoView
 				style={styles.video}
 				player={player2}
@@ -46,7 +65,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#000",
 	},
 	video: {
-		marginTop: 40,
 		width: Dimensions.get("window").width,
 		height: 275,
 	},
